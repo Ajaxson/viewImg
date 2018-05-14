@@ -114,7 +114,7 @@
             that.base.appendHtml += '<div class="window_viewimg on" id="'+that.option.boxId+'" style="position:'+that.option.viewPosition+'; top: 0; left: 0; z-index: 9999; width: 100%; height: 100%;">';
             that.base.appendHtml +=      '<div class="pd_viewimg" style="box-sizing: content-box; position: relative; width: '+that.base.pdboxWidth+'px; height: '+that.base.pdboxHeight+'px; padding-top: '+that.option.topPadding+'px; padding-left: '+that.option.leftPadding+'px;">';
             that.base.appendHtml +=            '<div class="re_viewimg" style="position: relative; width: 100%; height: 100%;">';
-            that.base.appendHtml +=                '<i class="viewBg" style="display: inline-block; position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; background: '+that.option.boxBg+';"></i>';
+            that.base.appendHtml +=                '<i class="viewBg" style="display: inline-block; position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.6; background: '+that.option.boxBg+';"></i>';
             that.base.appendHtml +=                '<img src="'+that.base.bigSrc+'" alt="" id="bigViewPic" style="position: absolute;">';
             that.base.appendHtml +=            '</div>';
             that.base.appendHtml +=      '</div>';
@@ -158,17 +158,17 @@
             that.base.litXy = { "x": that.base.litImg.offset().left, "y": that.base.litImg.offset().top, "width": that.base.litImg.width(), "height": that.base.litImg.height() }
             that.base.reviewXy = { "x": that.base.posReView.offset().left, "y": that.base.posReView.offset().top, "width": that.base.posReView.width(), "height": that.base.posReView.height() }
             that.base.bigXy = { "x": (that.base.litXy.x-that.base.reviewXy.x)/that.option.ratioScale, "y": (that.base.litXy.y-that.base.reviewXy.y)/that.option.ratioScale, "width": that.litObj.width(), "height": that.litObj.height() }
-            that.base.bigObj.css({  "left": that.base.bigXy.x+"px", "top": that.base.bigXy.y+"px", "width": that.base.bigXy.width+"px", "height": that.base.bigXy.height+"px", "opacity": 0  })
+            that.base.bigObj.css({  "left": that.base.bigXy.x+"px", "top": that.base.bigXy.y+"px", "width": that.base.bigXy.width+"px", "height": that.base.bigXy.height+"px" })
             that.base.toWidth = that._sumWidth(that.option.toWidth, that.base.reviewXy.width);
             that.base.toHeight = that.base.toWidth / that.base.litXy.width * that.base.litXy.height;
             that.base.toXy = { "x": (that.base.reviewXy.width/2 - that.base.toWidth/2), "y": that.base.reviewXy.height/2 - that.base.toHeight/2, "width": that.base.toWidth, "height": that.base.toHeight };
             // 调用放大前回调
             that.beforeEnlarge();
-            that.base.bigObj.animate( { "left": that.base.toXy.x, "top": that.base.toXy.y , "width": that.base.toXy.width, "height": that.base.toXy.height, "opacity": 1  }, { duration: that.option.toTime, easing: that.base.easingMethod, complete: function(){
+            that.base.bigObj.animate( { "left": that.base.toXy.x, "top": that.base.toXy.y , "width": that.base.toXy.width, "height": that.base.toXy.height }, { duration: that.option.toTime, easing: that.base.easingMethod, complete: function(){
                 // 调用放大完成的回调
                 that.enlargeEnd();
             } });
-            $(".viewBg").animate( { "opacity": 1 }, that.option.toTime+200 );
+            $(".viewBg").animate( { "opacity": 1 }, that.option.backTime-200 < 0? 10 : that.option.backTime-200 );
         },
 
         _sumWidth: function(toW, viewW){
@@ -196,7 +196,7 @@
 
             that.base.bigObj.stop();
             $("#"+that.option.boxId+" .viewBg").stop();
-            $("#"+that.option.boxId+" .viewBg").animate( { "opacity": 0 }, that.option.backTime-200 < 0? that.option.backTime : that.option.backTime-200 );
+            $("#"+that.option.boxId+" .viewBg").animate( { "opacity": 0 }, that.option.backTime+200 );
 
             var retoLitXy = { "x": that.base.litImg.offset().left, "y": that.base.litImg.offset().top, "width": that.base.litImg.width(), "height": that.base.litImg.height() }
             var retoViewXy = { "x": that.base.posReView.offset().left, "y": that.base.posReView.offset().top, "width": that.base.posReView.width(), "height": that.base.posReView.height() }
@@ -204,7 +204,7 @@
             
             // 调用缩小前回调
             that.beforeReduce();
-            that.base.bigObj.animate({ "left": retoXy.x, "top": retoXy.y , "width": retoXy.width, "height": retoXy.height, "opacity": 0.3 }, {duration: that.option.backTime, complete:function(){                    
+            that.base.bigObj.animate({ "left": retoXy.x, "top": retoXy.y , "width": retoXy.width, "height": retoXy.height }, {duration: that.option.backTime, complete:function(){                    
                 // 回复初始
                 that._reInit();
                 // 调用缩小完回调
