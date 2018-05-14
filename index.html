@@ -38,6 +38,107 @@
     <script src="js/jquery-1.11.3.min.js" language="javascript" type="text/javascript"></script>
    	<script src="js/jquery.easing.1.3.min.js" language="javascript" type="text/javascript"></script>
    	<script src="js/viewImg.1.0.1.js" language="javascript" type="text/javascript"></script>
+   	<script  language="javascript" type="text/javascript">
+		$(function(){
+			
+			/********************* 容器一 *****************************/
+			// 默认方法
+			var newView01 = new viewImg("body", ".tab_box01 .lit_picdefault");
+
+			// 2.3两个，因为是动态加载进去的(要代理，调用 reDom 方法，重新绑定)
+			newView02.reDom();
+
+			/********************* 容器二 *****************************/
+			// 2 _ 1
+			var newView02_01 = new viewImg("body", ".tab_box02 .lit_pic01", {
+			        lockScroll: true,
+			        viewBoxId: "winbox02"
+			});
+			// 点击标题方法
+			$("#click_tit").on("click", function(){
+				$(".lit_pic01").click();
+			})
+			// 任意相对丁文容器 容器 地方缩小
+			$(document).on("click", "#winbox02 .re_viewimg",  function(){
+				newView02_01._reduceFunc();
+			})
+
+			// 2 _ 2
+			var newView02_02 = new viewImg("body", ".tab_box02 .lit_pic02", {
+					beforeEnlarge: function(){
+						alert("放大前");
+					},
+					enlargeEnd: function(){
+						alert("放大完");
+					}
+			});
+
+			// 2 _ 3
+			var newView02_03 = new viewImg("body", ".tab_box02 .lit_pic03", {
+					beforeReduce: function(){
+						console.log("缩小前" + new Date());
+					},
+					reduceEnd: function(){
+						console.log("缩小完" + new Date());
+					}
+			});
+
+			/********************* 容器三 *****************************/
+			// 测试下在一个缩放的容器里
+			function contFull(obj,oldW,oldH){
+			    var win = $(window);
+			    var winW, winH, scale,
+			        uiW = oldW,
+			        uiH = oldH;
+			    win.resize(function(){
+			        winW = win.width();
+			        winH = win.height();
+			        if(winW/winH > uiW/uiH ){
+			            scale = winH/uiH
+			        }else{
+			            scale = winW/uiW
+			        }
+			        scale = scale.toFixed(3)
+			        $(obj).css({
+			            "-webkit-transform": "scale(" + scale + ")",
+			            "-moz-transform": "scale(" + scale + ")",
+			            "-ms-transform": "scale(" + scale + ")",
+			            "-o-transform": "scale(" + scale + ")",
+			            "transform": "scale(" + scale + ")"
+			        });
+			    }).trigger("resize");
+			}
+			contFull(".tab_box03", 1000, 368);
+
+			// 缩放 得ie9以上
+			returnScale = function(){
+				var browser=navigator.appName 
+				var b_version=navigator.appVersion 
+				var version=b_version.split(";"); 
+				var trim_Version=version[1].replace(/[ ]/g,""); 
+				var scale = 1;
+				if(browser=="Microsoft Internet Explorer" && trim_Version < "MSIE9.0") 
+				{ 
+					scale = 1;
+				}else{
+					scale = $(".tab_box03").css('transform').substring(7).split(",")[0];
+				} 
+				return scale;
+			}
+
+			var newView03 = new viewImg(".tab_box03", ".tab_box03 .lit_pic",{
+			        viewPosition: "absolute",    
+			        toWidth: 250,
+			        easing: "easeOutBack",
+			        ratioScale: returnScale()
+			    });
+			$(window).resize(function(){
+			    newView03.option.ratioScale = returnScale();
+			    newView03.resizeApply();
+			})
+
+		})	
+	</script>
 </head>
 <body>
 	<div class="page">
@@ -103,110 +204,4 @@
 	</div>
 </body>
 </html>
-<script  language="javascript" type="text/javascript">
 
-	/********************* 容器一 *****************************/
-	// 默认方法
-	var newView01 = new viewImg("body", ".tab_box01 .lit_picdefault");
-
-	// 2.3两个，因为是动态加载进去的(要代理，调用 reDom 方法，重新绑定)
-	newView02.reDom();
-
-	/********************* 容器二 *****************************/
-	// 2 _ 1
-	var newView02_01 = new viewImg("body", ".tab_box02 .lit_pic01", {
-	        lockScroll: true,
-	        viewBoxId: "winbox02"
-	});
-	// 点击标题方法
-	$("#click_tit").on("click", function(){
-		$(".lit_pic01").click();
-	})
-	// 任意相对丁文容器 容器 地方缩小
-	$(document).on("click", "#winbox02 .re_viewimg",  function(){
-		newView02_01._reduceFunc();
-	})
-
-	// 2 _ 2
-	var newView02_02 = new viewImg("body", ".tab_box02 .lit_pic02", {
-			beforeEnlarge: function(){
-				alert("放大前");
-			},
-			enlargeEnd: function(){
-				alert("放大完");
-			}
-	});
-
-	// 2 _ 3
-	var newView02_03 = new viewImg("body", ".tab_box02 .lit_pic03", {
-			beforeReduce: function(){
-				console.log("缩小前" + new Date());
-			},
-			reduceEnd: function(){
-				console.log("缩小完" + new Date());
-			}
-	});
-
-	/********************* 容器三 *****************************/
-	// 测试下在一个缩放的容器里
-	function contFull(obj,oldW,oldH){
-	    var win = $(window);
-	    var winW, winH, scale,
-	        uiW = oldW,
-	        uiH = oldH;
-	    win.resize(function(){
-	        winW = win.width();
-	        winH = win.height();
-	        if(winW/winH > uiW/uiH ){
-	            scale = winH/uiH
-	        }else{
-	            scale = winW/uiW
-	        }
-	        scale = scale.toFixed(3)
-	        $(obj).css({
-	            "-webkit-transform": "scale(" + scale + ")",
-	            "-moz-transform": "scale(" + scale + ")",
-	            "-ms-transform": "scale(" + scale + ")",
-	            "-o-transform": "scale(" + scale + ")",
-	            "transform": "scale(" + scale + ")"
-	        });
-	    }).trigger("resize");
-	}
-	contFull(".tab_box03", 1000, 368);
-
-	// 缩放 得ie9以上
-	returnScale = function(){
-		var browser=navigator.appName 
-		var b_version=navigator.appVersion 
-		var version=b_version.split(";"); 
-		var trim_Version=version[1].replace(/[ ]/g,""); 
-		var scale = 1;
-		if(browser=="Microsoft Internet Explorer" && trim_Version < "MSIE9.0") 
-		{ 
-			scale = 1;
-		}else{
-			scale = $(".tab_box03").css('transform').substring(7).split(",")[0];
-		} 
-		return scale;
-	}
-
-	var newView03 = new viewImg(".tab_box03", ".tab_box03 .lit_pic",{
-	        viewPosition: "absolute",    
-	        toWidth: 250,
-	        easing: "easeOutBack",
-	        ratioScale: returnScale()
-	    });
-	$(window).resize(function(){
-	    newView03.option.ratioScale = returnScale();
-	    newView03.resizeApply();
-	})
-	
-	
-	
-	// 这部分和 测试无关，，，只是 github在线预览 特殊原因、
-	newView01.reDom();
-	newView02_01.reDom();
-	newView02_02.reDom();
-	newView02_03.reDom();
-	newView03.reDom();
-</script>
