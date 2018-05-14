@@ -161,6 +161,15 @@
             that.base.bigObj.css({  "left": that.base.bigXy.x+"px", "top": that.base.bigXy.y+"px", "width": that.base.bigXy.width+"px", "height": that.base.bigXy.height+"px" })
             that.base.toWidth = that._sumWidth(that.option.toWidth, that.base.reviewXy.width);
             that.base.toHeight = that.base.toWidth / that.base.litXy.width * that.base.litXy.height;
+
+            if(that.base.litXy.width > that.base.litXy.height){
+                that.base.toWidth = that._sumWidth(that.option.toWidth, that.base.reviewXy.width) > that.base.reviewXy.width? that.base.reviewXy.width : that._sumWidth(that.option.toWidth, that.base.reviewXy.width);
+                that.base.toHeight = that.base.toWidth / that.base.litXy.width * that.base.litXy.height;
+            }else{
+                that.base.toHeight = that._sumWidth(that.option.toWidth, that.base.reviewXy.height) > that.base.reviewXy.height? that.base.reviewXy.height : that._sumWidth(that.option.toWidth, that.base.reviewXy.height);
+                that.base.toWidth = that.base.toHeight / that.base.litXy.height * that.base.litXy.width;
+            }
+
             that.base.toXy = { "x": (that.base.reviewXy.width/2 - that.base.toWidth/2), "y": that.base.reviewXy.height/2 - that.base.toHeight/2, "width": that.base.toWidth, "height": that.base.toHeight };
             // 调用放大前回调
             that.beforeEnlarge();
@@ -171,13 +180,13 @@
             $(".viewBg").animate( { "opacity": 1 }, that.option.backTime-200 < 0? 10 : that.option.backTime-200 );
         },
 
-        _sumWidth: function(toW, viewW){
+        _sumWidth: function(toWH, viewWh){
             var that = this;
             var res = /^[1-9]+[0-9]*]*$/ ; 
-            if(!res.test(that.option.toWidth)){
-                 return viewW * (toW).replace(/%/, "") / 100;
+            if(!res.test(toWH)){
+                 return viewWh * (toWH).replace(/%/, "") / 100;
             }else{
-                return toW
+                return toWH
             }
         },
 
