@@ -1,5 +1,5 @@
 /*!
- * viewIng v1.0.1 ~ Copyright (c) Ajaxson, 2018/05/14/ Email Ajaxson@163.com
+ * viewIng v1.0.2 ~ Copyright (c) Ajaxson, 2018/05/14/ Email Ajaxson@163.com
  * 如有什么问题，请github 留言 或者 邮件
 */
 
@@ -136,6 +136,7 @@
             var that = this;
             that.litObj.on("click", function(){
                 that.base.litImg = $(this);
+                that.beforeEnlarge();
                 that.base.bigSrc = that.base.litImg.attr("viewSrc")? that.base.litImg.attr("viewSrc") : that.base.litImg.attr("src");
                 that._reInit();
                 // 调用模板渲染
@@ -143,6 +144,8 @@
                 that._appendView(that.base.appendHtml);
                 // 大图位置计算
                 that._bigStart();
+                // 调用放大
+                that._bigDo();
                 // 给大图添加点击
                 that._bigClick();
             })
@@ -171,8 +174,12 @@
             }
 
             that.base.toXy = { "x": (that.base.reviewXy.width/2 - that.base.toWidth/2), "y": that.base.reviewXy.height/2 - that.base.toHeight/2, "width": that.base.toWidth, "height": that.base.toHeight };
+            
+        },
+
+        _bigDo: function(){
+            var that = this;
             // 调用放大前回调
-            that.beforeEnlarge();
             that.base.bigObj.animate( { "left": that.base.toXy.x, "top": that.base.toXy.y , "width": that.base.toXy.width, "height": that.base.toXy.height }, { duration: that.option.toTime, easing: that.base.easingMethod, complete: function(){
                 // 调用放大完成的回调
                 that.enlargeEnd();
@@ -237,6 +244,11 @@
             that.base.pdView.css({ "width": that.base.pdboxWidth, "height": that.base.pdboxHeight, "leftPadding": that.option.leftPadding, "topPadding": that.option.leftPadding })
         },
 
+        _resizeDo: function(){
+            var that = this;
+            that.base.bigObj.css({ "left": that.base.toXy.x, "top": that.base.toXy.y , "width": that.base.toXy.width, "height": that.base.toXy.height });
+        },
+
         // 让动态加载的 dom重新绑定
         reDom: function(){
             var that = this;
@@ -247,10 +259,11 @@
         // 尺寸变了, 外部调用这个方法
         resizeApply: function(){
             var that = this;
-            if(that.base.boxId){
+            if($("#"+that.option.boxId)[0]){
                 // 重新计算
                 that._bigStart();
-                that._bigClick();
+                that._resizeDo();
+                // that._bigClick();
             }
         },
 
